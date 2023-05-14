@@ -1,13 +1,13 @@
 import express from "express"
-require("dotenv").config()
-import bodyParser from "body-parser"
-import compression from "compression"
-import cookieParser from "cookie-parser"
 import http from "http"
+import bodyParser from "body-parser"
+import cookieParser from "cookie-parser"
+import compression from "compression"
 import cors from "cors"
-
+require("dotenv").config()
 import router from "./router"
 import mongoose from "mongoose"
+
 const app = express()
 
 app.use(
@@ -15,30 +15,19 @@ app.use(
     credentials: true,
   })
 )
+
 app.use(compression())
 app.use(cookieParser())
 app.use(bodyParser.json())
 
 const server = http.createServer(app)
-const port = process.env.PORT || 5000
-// const connectDB = require("./db/connect")
-server.listen(port, () => {
-  console.log(`Server is running on ${port}`)
+
+server.listen(3000, () => {
+  console.log("Server running on http://localhost:3000/")
 })
 
 mongoose.Promise = Promise
-mongoose.connect(process.env.DATABASE_UR)
+mongoose.connect(process.env.DATABASE_URL)
 mongoose.connection.on("error", (error: Error) => console.log(error))
+
 app.use("/", router())
-// const start = async () => {
-//   try {
-//     await connectDB(process.env.DATABASE_URL)
-//     //mongoose.connect(process.env.DATABASE_URL)
-//     server.listen(port, () => {
-//       console.log(`Server is running on ${port}`)
-//     })
-//   } catch (error) {
-//     mongoose.connection.on("error", (error: Error) => console.log(error))
-//   }
-// }
-// start()
